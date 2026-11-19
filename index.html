@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>F1 Tabletop AR</title>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(circle at 50% 35%, #232a34 0%, #11151b 100%);
+      color: #f4f6f8;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      --poster-color: transparent;
+      --progress-bar-color: #e10600;
+      --progress-bar-height: 3px;
+    }
+
+    .badge {
+      position: fixed;
+      top: max(16px, env(safe-area-inset-top));
+      left: 16px;
+      z-index: 10;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(15, 19, 25, 0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      pointer-events: none;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #e10600;
+      box-shadow: 0 0 8px rgba(225, 6, 0, 0.85);
+    }
+
+    .ar-btn {
+      position: fixed;
+      bottom: max(24px, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 999px;
+      background: #e10600;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(225, 6, 0, 0.42);
+      transition: transform 0.15s ease, background 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .ar-btn:hover {
+      background: #ff1e17;
+      transform: translateX(-50%) translateY(-1px);
+    }
+
+    .ar-btn:active {
+      transform: translateX(-50%) scale(0.97);
+    }
+
+    .ar-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .desktop-hint {
+      position: fixed;
+      bottom: max(20px, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(15, 19, 25, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(244, 246, 248, 0.78);
+      font-size: 12px;
+      pointer-events: none;
+      white-space: nowrap;
+      display: none;
+    }
+
+    model-viewer:not([ar-status]) ~ .desktop-hint,
+    model-viewer[ar-status="not-presenting"] ~ .desktop-hint {
+      display: none;
+    }
+
+    body.no-ar .desktop-hint {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="badge">
+    <span class="badge-dot"></span>
+    F1 Tabletop AR
+  </div>
+
+  <model-viewer
+    id="viewer"
+    src="assets/f1_tabletop_track.glb"
+    ios-src="assets/f1_tabletop_track.usdz"
+    poster="assets/poster.png"
+    alt="Animated tabletop Formula 1 race track diorama with 4 F1 cars racing around the circuit, grandstands, and cheering fans"
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    ar-placement="floor"
+    ar-scale="auto"
+    autoplay
+    camera-controls
+    touch-action="pan-y"
+    camera-orbit="22deg 56deg 115%"
+    min-camera-orbit="auto 12deg 45%"
+    max-camera-orbit="auto 84deg 260%"
+    shadow-intensity="1"
+    shadow-softness="0.85"
+    exposure="1.08"
+    tone-mapping="neutral"
+  >
+    <button slot="ar-button" class="ar-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.18L18.74 8 12 11.82 5.26 8 12 4.18zM5 9.65l6 3.33v6.54l-6-3.33V9.65zm8 9.87v-6.54l6-3.33v6.54l-6 3.33z"/>
+      </svg>
+      Place on Table (AR)
+    </button>
+  </model-viewer>
+
+  <div class="desktop-hint">Drag to orbit · Open on iPhone or Android for Tabletop AR</div>
+
+  <script>
+    const viewer = document.getElementById('viewer');
+    viewer.addEventListener('load', () => {
+      if (!viewer.canActivateAR) {
+        document.body.classList.add('no-ar');
+      }
+    });
+  </script>
+</body>
+</html>
